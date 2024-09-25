@@ -1,13 +1,8 @@
 import React, { useState } from "react";
+import { useForm } from "../context/FormContext";
 
-type FileUploadProps = {
-  onChange: (files: FileList) => void;
-  error?: string;
-  label?: string;
-  required?: boolean;
-};
-
-const FileUpload: React.FC<FileUploadProps> = ({ onChange, error, label = "Upload Files", required = false }) => {
+const FileUpload: React.FC = () => {
+  const { formData, handleChange, errors, touchedFields } = useForm();
   const [fileNames, setFileNames] = useState<string[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,19 +10,22 @@ const FileUpload: React.FC<FileUploadProps> = ({ onChange, error, label = "Uploa
     if (files) {
       const names = Array.from(files).map((file) => file.name);
       setFileNames(names);
-      onChange(files);
+      handleChange(e);
     }
   };
 
   return (
     <div className="flex flex-col space-y-2">
-      <label className="text-lg font-semibold">{label} {required && <span className="text-red-500">*</span>}</label>
+      <label className="text-lg font-semibold">
+        Upload Files <span className="text-red-500">*</span>
+      </label>
       <input
         type="file"
+        name="files"
         multiple
         onChange={handleFileChange}
         className="border rounded-md p-2"
-        required={required}
+        required
       />
       {fileNames.length > 0 && (
         <div className="mt-2">
@@ -39,7 +37,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onChange, error, label = "Uploa
           </ul>
         </div>
       )}
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {touchedFields.files && errors.files && <p className="text-red-500 text-sm">{errors.files}</p>}
     </div>
   );
 };

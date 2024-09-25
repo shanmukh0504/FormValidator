@@ -1,13 +1,14 @@
 import React from "react";
 import FormValidator from "./components/FormValidator";
+import { FormProvider } from "./context/FormContext";
 
 const App: React.FC = () => {
-  const handleSubmit = () => {};
-
   return (
-    <div>
-      <FormValidator onSubmit={handleSubmit} />
-    </div>
+    <FormProvider>
+      <div>
+        <FormValidator />
+      </div>
+    </FormProvider>
   );
 };
 

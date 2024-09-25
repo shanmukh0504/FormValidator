@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import { debounce } from "lodash";
+import { useState, useEffect } from 'react';
+import { debounce } from 'lodash';
 import {
   validateEmail,
   validatePassword,
   validateUsername,
 } from "../utils/validators";
 
-type FormData = {
+export type FormData = {
   username?: string;
   email?: string;
   password?: string;
@@ -17,17 +17,15 @@ type FormData = {
 
 const useFormContext = (
   initialValues: FormData,
-  onSubmit: (values: FormData) => void,
-  requiredFields?: Partial<Record<keyof FormData, boolean>>
+  validationRules?: Record<keyof FormData, { minLength?: number; maxLength?: number }>
 ) => {
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
 
-  const validateField = debounce((name: keyof FormData, value: string) => {
+  const validateField = debounce((name: keyof FormData, value: any) => {
     setErrors((prevErrors) => {
       const newErrors = { ...prevErrors };
-      const isRequired = requiredFields?.[name] ?? true;
       if (value.trim() === "") {
         delete newErrors[name];
       } else {
@@ -63,7 +61,7 @@ const useFormContext = (
             break;
           case "radio":
             if (!["male", "female", "other"].includes(value)) {
-              newErrors[name] = "Please select a radio.";
+              newErrors[name] = "Please select a valid option.";
             } else {
               delete newErrors[name];
             }
@@ -94,29 +92,20 @@ const useFormContext = (
         }));
         validateField(name as keyof FormData, value);
       }
-    } else if ("target" in e && "name" in e.target && "value" in e.target) {
-      const { name, value } = e.target;
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
     }
   };
 
-
-
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, type } = e.target;
-
-    setTouchedFields((prev) => ({ ...prev, [name]: true }));
-
-    // Skip validation for file inputs as we are not validating files like text fields
-    if (type === "file") return;
-
-    // Validate only if the value is a string (i.e., for text inputs)
-    validateField(name as keyof FormData, formData[name as keyof FormData] as string || "");
+  const handleSubmit = () => {
+    if (Object.keys(errors).length === 0) {
+      console.log(formData);
+    }
   };
 
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name } = e.target;
+    setTouchedFields((prev) => ({ ...prev, [name]: true }));
+    validateField(name as keyof FormData, formData[name as keyof FormData] || '');
+  };
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name } = e.target;
@@ -128,17 +117,9 @@ const useFormContext = (
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (Object.keys(errors).length === 0) {
-      onSubmit(formData);
-    }
-  };
-
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      validateField.cancel(); // Cancel the debounced function
+      validateField.cancel();
     };
   }, []);
 
@@ -149,7 +130,7 @@ const useFormContext = (
     handleChange,
     handleBlur,
     handleFocus,
-    handleSubmit,
+    handleSubmit
   };
 };
 
