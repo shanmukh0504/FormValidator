@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "../context/FormContext";
+import { useForm } from "../contexts/FormContext";
 
 const defaultOptions = [
   { value: "male", label: "Male" },
@@ -32,7 +32,9 @@ const RadioGroup: React.FC = () => {
           </label>
         ))}
       </div>
-      {touchedFields.radio && errors.radio && <p className="text-red-500 text-sm">{errors.radio}</p>}
+      {touchedFields.radio && errors.radio && (
+        <p className="text-red-500 text-sm">{errors.radio}</p>
+      )}
     </div>
   );
 };

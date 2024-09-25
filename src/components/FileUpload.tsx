@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm } from "../context/FormContext";
+import { useForm } from "../contexts/FormContext";
 
 const FileUpload: React.FC = () => {
   const { formData, handleChange, errors, touchedFields } = useForm();
@@ -37,7 +37,9 @@ const FileUpload: React.FC = () => {
           </ul>
         </div>
       )}
-      {touchedFields.files && errors.files && <p className="text-red-500 text-sm">{errors.files}</p>}
+      {touchedFields.files && errors.files && (
+        <p className="text-red-500 text-sm">{errors.files}</p>
+      )}
     </div>
   );
 };
