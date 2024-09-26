@@ -1,58 +1,62 @@
 import React, { useEffect } from "react";
 import { useForm } from "../contexts/FormContext";
 
-interface UsernameInputProps {
-  minLength?: number;
-  maxLength?: number;
+type NumberInputProps = {
+  label?: string;
+  min?: number;
+  max?: number;
   className?: string;
-}
+  required?: boolean;
+};
 
-const UsernameInput: React.FC<UsernameInputProps> = ({
-  minLength = 5,
-  maxLength = 15,
+const NumberInput: React.FC<NumberInputProps> = ({
+  label = "Enter your age",
+  min = 1,
+  max = 100,
   className,
+  required = false,
 }) => {
   const {
     formData,
-    errors,
-    touchedFields,
     handleChange,
     handleBlur,
     handleFocus,
+    errors,
+    touchedFields,
     setValidationRules,
   } = useForm();
 
   useEffect(() => {
-    setValidationRules("username", { minLength, maxLength });
-  }, [minLength, maxLength, setValidationRules]);
+    setValidationRules("age", { min, max });
+  }, [min, max, setValidationRules]);
 
   return (
     <div className="flex flex-col space-y-2">
       <label className="text-lg font-semibold">
-        Username <span className="text-red-500">*</span>
+        {label} {required && <span className="text-red-500">*</span>}
       </label>
       <input
-        type="text"
-        name="username"
-        placeholder="Enter your username"
+        type="number"
+        name="age"
+        min={min}
+        max={max}
+        placeholder={`Enter ${label}`}
         className={`${className} block w-full px-4 py-2 text-base border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-          touchedFields.username && errors.username
+          touchedFields.age && errors.age
             ? "border-red-500 focus:ring-red-500 focus:border-red-500"
             : ""
         }`}
-        value={formData.username || ""}
+        value={formData.age || ""}
         onChange={handleChange}
         onBlur={handleBlur}
         onFocus={handleFocus}
-        minLength={minLength}
-        maxLength={maxLength}
-        required
+        required={required}
       />
-      {touchedFields.username && errors.username && (
-        <p className="text-red-500 text-sm">{errors.username}</p>
+      {touchedFields.age && errors.age && (
+        <p className="text-red-500 text-sm">{errors.age}</p>
       )}
     </div>
   );
 };
 
-export default UsernameInput;
+export default NumberInput;

@@ -3,10 +3,24 @@ export const validateEmail = (email: string): boolean => {
     return emailRegex.test(email);
   };
   
-  export const validateUsername = (username: string): boolean => {
-    return username.length >= 5 && username.length <= 15;
+  export const validateUsername = (username: string, minLength: number, maxLength: number): {valid: boolean; message: string} => {
+    if (minLength && username.length < minLength) {
+      return { valid: false, message: `Username must be at least ${minLength} characters.`};
+    } if (maxLength && username.length > maxLength) {
+      return {valid: false, message: `Username must be no more than ${maxLength} characters.`};
+    }
+    return {valid: true, message:''};
   };
   
+  export const validateNumber = (age: number, min: number, max: number): {valid: boolean; message: string} => {
+    if (age < min) {
+      return { valid: false, message: `Age must be at least ${min}.`};
+    } if (age > max) {
+      return {valid: false, message: `Age must be no more than ${max}.`};
+    }
+    return {valid: true, message:''};
+  };
+
   export const validatePassword = (password: string): { valid: boolean; message: string } => {
     const minLength = 8;
     const hasUpperCase = /[A-Z]/.test(password);

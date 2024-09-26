@@ -1,16 +1,16 @@
-// /components/RadioGroup.tsx
+// /components/CheckBoxGroup.tsx
 import React from "react";
 import { useForm } from "../contexts/FormContext";
 
-type RadioGroupProps = {
+type CheckBoxGroupProps = {
   label?: string;
   options?: { value: string; label: string }[];
-  className?: string;
   required?: boolean;
+  className?: string;
 };
 
-const RadioGroup: React.FC<RadioGroupProps> = ({
-  label = "Select Option",
+const CheckBoxGroup: React.FC<CheckBoxGroupProps> = ({
+  label = "Select Options",
   options = [
     { value: "option1", label: "Option 1" },
     { value: "option2", label: "Option 2" },
@@ -26,27 +26,26 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
       <label className="text-lg font-semibold">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
-      <div className="flex space-x-4">
+      <div className="flex flex-wrap gap-4">
         {options.map((option) => (
           <label key={option.value} className="flex items-center">
             <input
-              type="radio"
-              name="radio"
+              type="checkbox"
+              name="checkboxes"
               value={option.value}
-              checked={formData.radio === option.value}
+              checked={formData.checkboxes?.includes(option.value) || false}
               onChange={handleChange}
-              className={`${className} form-radio h-4 w-4 text-blue-600 focus:ring-blue-500`}
-              required={required}
+              className={`${className} form-checkbox h-5 w-5 text-blue-600 focus:ring-blue-500`}
             />
             <span className="ml-2">{option.label}</span>
           </label>
         ))}
       </div>
-      {touchedFields.radio && errors.radio && (
-        <p className="text-red-500 text-sm">{errors.radio}</p>
+      {touchedFields.checkboxes && errors.checkboxes && (
+        <p className="text-red-500 text-sm">{errors.checkboxes}</p>
       )}
     </div>
   );
 };
 
-export default RadioGroup;
+export default CheckBoxGroup;

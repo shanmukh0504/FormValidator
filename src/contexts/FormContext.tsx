@@ -10,6 +10,11 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     password: '',
     reenterPassword: '',
     radio: '',
+    checkboxes: [] as string[],
+    age: 0,
+    satisfaction: 50,
+    comments: '',
+    selectOption: '',
     files: null,
   });
 
